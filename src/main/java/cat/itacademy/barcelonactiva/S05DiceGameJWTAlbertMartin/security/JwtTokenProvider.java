@@ -5,28 +5,25 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TokenUtils {
+public class JwtTokenProvider {
 
     private final static String ACCESS_TOKEN_SECRET = "4qhq8LrEBfYcaRHxhdb9zURb2rf8e7Ud";
-    private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L; //equivale a un mes
+    private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L;
 
     public static String createToken(String name, String email) {
-        // tiempo de validez en milisegundos
         long expirationTime = ACCESS_TOKEN_VALIDITY_SECONDS * 1000;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
-
-        //añadimos datos adicionales al token
-//        Map<String, Object> extra = new HashMap<>();
-//        extra.put("name", name);
-
+        Map<String, Object> extra = new HashMap<>();
+        extra.put("name", name);
         return Jwts.builder()
                 .setSubject(email)
                 .setExpiration(expirationDate)
-                //.addClaims(extra)
+                .addClaims(extra)
                 .signWith(Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes()))
                 .compact();
     }

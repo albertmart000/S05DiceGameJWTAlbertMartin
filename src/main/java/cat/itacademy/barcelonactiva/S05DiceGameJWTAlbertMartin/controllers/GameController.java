@@ -2,30 +2,22 @@ package cat.itacademy.barcelonactiva.S05DiceGameJWTAlbertMartin.controllers;
 
 import cat.itacademy.barcelonactiva.S05DiceGameJWTAlbertMartin.dto.GameDTO;
 import cat.itacademy.barcelonactiva.S05DiceGameJWTAlbertMartin.services.GameServiceImpl;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/players")
+@AllArgsConstructor
 public class GameController {
 
-    @Autowired
-    private GameServiceImpl gameService;
-
-//    @PostMapping("/{playerId}/games")
-//    public ResponseEntity<GameDTO> addGame(@PathVariable Long playerId, @RequestBody GameDTO gameDTO) {
-//        GameDTO gameDTO = gameService.addGame(gameDTO, playerId);
-//        return new ResponseEntity<>(gameDTO, HttpStatus.CREATED);
-//    }
+    private final GameServiceImpl gameService;
 
     @PostMapping("/{playerId}/games")
-    public ResponseEntity<GameDTO> addGame(@PathVariable Long playerId, @RequestBody GameDTO gameDTO) {
+    public ResponseEntity<GameDTO> addGame(@RequestBody GameDTO gameDTO, @PathVariable Long playerId) {
         try {
             GameDTO newGameDTO = gameService.addGame(gameDTO, playerId);
             return new ResponseEntity<>(newGameDTO, HttpStatus.CREATED);
@@ -33,7 +25,6 @@ public class GameController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GetMapping("/{playerId}/games")
     public ResponseEntity<List<GameDTO>> getGameListByPlayer(@PathVariable Long playerId){

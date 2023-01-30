@@ -2,20 +2,19 @@ package cat.itacademy.barcelonactiva.S05DiceGameJWTAlbertMartin.controllers;
 
 import cat.itacademy.barcelonactiva.S05DiceGameJWTAlbertMartin.dto.PlayerDTO;
 import cat.itacademy.barcelonactiva.S05DiceGameJWTAlbertMartin.services.IPlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import lombok.AllArgsConstructor;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/players")
+@AllArgsConstructor
 public class PlayerController {
 
-    @Autowired
-    private IPlayerService playerService;
+    private final IPlayerService playerService;
 
     @PostMapping
     public ResponseEntity<PlayerDTO> addPlayer(@RequestBody PlayerDTO playerDTO) {
@@ -47,7 +46,7 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getAllPlayers(){
+    public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
         try {
             List<PlayerDTO> playerDTOList = playerService.getAllPlayers();
             if (playerDTOList.isEmpty()) {
@@ -59,8 +58,52 @@ public class PlayerController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    @GetMapping("/ranking/winner")
+    public ResponseEntity<PlayerDTO> getWinningPlayer() {
+        try {
+            List<PlayerDTO> playerDTOList = playerService.getAllPlayers();
+            if (playerDTOList.isEmpty()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Error", "No n'hi ha cap jugador a la llista");
+                return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+            }
+            return ResponseEntity.ok(playerService.getWinningPlayer());
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    @GetMapping("/ranking/loser")
+    public ResponseEntity<PlayerDTO> getLosingPlayer() {
+        try {
+            List<PlayerDTO> playerDTOList = playerService.getAllPlayers();
+            if (playerDTOList.isEmpty()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Error", "No n'hi ha cap jugador a la llista");
+                return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+            }
+            return ResponseEntity.ok(playerService.getLosingPlayer());
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/ranking")
+    public ResponseEntity<List<PlayerDTO>> getRankingPlayers() {
+        try {
+            List<PlayerDTO> playerDTOList = playerService.getRankingPlayers();
+            if (playerDTOList.isEmpty()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Error", "No n'hi ha cap jugador a la llista");
+                return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(playerDTOList, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 

@@ -10,7 +10,7 @@ public interface IPlayerService {
 
     PlayerDTO updatePlayer(PlayerDTO playerDTOToUpdate, Long id);
 
-    Boolean deletePlayer(Long id);
+    void deletePlayer(Long id);
 
     PlayerDTO getPlayerById(Long id);
 
